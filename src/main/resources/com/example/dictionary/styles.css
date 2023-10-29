@@ -1,0 +1,9 @@
+/* Show the vertical scroll bar continuously */
+.scroll-bar:vertical {
+    -fx-background-color: derive(-fx-base,20%);
+}
+
+/* Show the horizontal scroll bar continuously */
+.scroll-bar:horizontal {
+    -fx-background-color: derive(-fx-base,20%);
+}

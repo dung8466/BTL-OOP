@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.web.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.dictionary.DictionaryController">
+    <MenuBar>
+        <Menu text="File">
+            <MenuItem text="Switch to E_V" onAction="#switchToEVDictionary"/>
+            <MenuItem text="Switch to V_E" onAction="#switchToVEDictionary"/>
+            <MenuItem text="Exit" onAction="#exitApplication"/>
+        </Menu>
+        <Menu text="Edit">
+            <MenuItem text="Add New Word" onAction="#addNewWord" />
+        </Menu>
+    </MenuBar>
+    <VBox layoutX="-2.0" layoutY="-2.0" prefHeight="406.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <HBox alignment="CENTER_RIGHT" layoutX="110.0" layoutY="-31.0" prefHeight="40.0" prefWidth="364.0"
+              AnchorPane.bottomAnchor="-2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <padding>
+                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+            </padding>
+            <TextField fx:id="textField">
+                <VBox.margin>
+                    <Insets left="10.0" right="10.0" top="20.0"/>
+                </VBox.margin>
+            </TextField>
+            <Button text="Add New Word" onAction="#addNewWord"/>
+            <Button layoutX="1.0" mnemonicParsing="false" onAction="#soundAPI" text="US">
+                <HBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </HBox.margin>
+            </Button>
+            <Button mnemonicParsing="false" onAction="#Speech" text="UK">
+                <HBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </HBox.margin>
+            </Button>
+        </HBox>
+        <HBox prefHeight="356.0" prefWidth="600.0">
+            <VBox.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </VBox.margin>
+            <ListView fx:id="listView" prefHeight="200.0" prefWidth="200.0"/>
+            <WebView fx:id="definitionView" prefHeight="353.0" prefWidth="404.0"/>
+        </HBox>
+    </VBox>
+</AnchorPane>
