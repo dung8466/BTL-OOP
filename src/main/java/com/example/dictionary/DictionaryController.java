@@ -9,11 +9,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,12 +26,14 @@ import static com.example.dictionary.Dictionary.DATA_FILE_PATH;
 public class DictionaryController {
     public ListView<String> listView;
     public WebView definitionView;
+    @FXML
+    public MenuItem changeWordMenuItem;
     private Map<String, Word> data = new HashMap<>();
 
     private String word;
 
     @FXML
-    private MenuItem deleteWordMenuItem;
+    public MenuItem deleteWordMenuItem;
 
     @FXML
     private TextField searchTextField;
@@ -54,14 +59,20 @@ public class DictionaryController {
         initListeners();
     }
 
+    public Map<String, Word> getData() {
+        return this.data;
+    }
+
     private void initListeners() {
         listView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         word = newValue.trim();
                         deleteWordMenuItem.setVisible(true);
+                        changeWordMenuItem.setVisible(true);
                         displayWordDefinition(word);
                     }
+
                 }
         );
         defaultData.addAll(listView.getItems());
@@ -71,12 +82,14 @@ public class DictionaryController {
         Word newWord = new Word(word, definition);
         data.put(word, newWord);
         listView.getItems().add(word);
+//        listView.getItems().addAll(data.keySet());
     }
 
     public void deleteWord(String word) {
         data.remove(word);
         listView.getItems().remove(word);
         definitionView.getEngine().loadContent("");
+//        listView.getItems().addAll(data.keySet());
     }
 
     @FXML
@@ -109,7 +122,7 @@ public class DictionaryController {
                 writer.write(currentLine + System.getProperty("line.separator"));
             }
         }
-
+        deleteWord(wordToDelete);
         // Delete the original file and rename the temp file
         if (inputFile.delete() && tempFile.renameTo(inputFile)) {
             System.out.println("Word deleted from file: " + wordToDelete);
@@ -117,13 +130,23 @@ public class DictionaryController {
     }
 
     public void changeWordDefinition(String word, String newDefinition) {
+        try {
+            readData();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("changeWordDefinition method called with word: " + word + " and new definition: " + newDefinition);
         // Update the definition of an existing word
         if (data.containsKey(word)) {
             Word wordObj = data.get(word);
             wordObj.setDef(newDefinition);
-
+            int index = listView.getItems().indexOf(word);
+            if (index >= 0) {
+                listView.getItems().set(index, word);
+            }
             // Refresh the WebView with the new definition
             displayWordDefinition(word);
+//            listView.getItems().addAll(data.keySet());
         }
     }
 
@@ -151,79 +174,147 @@ public class DictionaryController {
     public void saveDefinitionButtonClicked(String word, String newDefinition) {
         changeWordDefinition(word, newDefinition);
         updateWordDefinitionToFile(word, newDefinition);
-        listView.getItems().setAll(data.keySet());
+//        listView.getItems().setAll(data.keySet());
     }
 
     public void displayWordDefinition(String word) {
         if (data.containsKey(word)) {
             String definition = data.get(word).getDef();
             definitionView.getEngine().loadContent(definition, "text/html");
+            deleteWordMenuItem.setVisible(true);
+            changeWordMenuItem.setVisible(true);
         }
     }
 
-    public void Speech() {
+    public void UkVoice() {
         word = listView.getSelectionModel().getSelectedItem();
-        TextToSpeech.Speech(word);
+        Uk.Speech(word);
     }
 
-    public void soundAPI() {
+    public void UsVoice() {
         word = listView.getSelectionModel().getSelectedItem();
-        Audio audio = new Audio();
+        Us us = new Us();
         try {
-            audio.play(audio.getAudio(word, "en"));
+            us.play(us.getAudio(word, "en"));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
     public void addWordToFile(String word, String definition) {
-        System.out.println(translateWord(word));
-        String htmlContent = word + "<html>  <head>      </head>  <body>    " +
-                "<i>" + word + "</i><br>    " +
-                "<ul>      <li>        " +
-                "<font color=\"#cc0000\"><b>" + definition + "</b></font>" +
-                "      </li>    </ul>  </body></html>";
+        String translatedDefinition = translateWord(word);
+//        System.out.println(translateWord(word));
+//        String htmlContent = word + "<html>  <head>      </head>  <body>    " +
+//                "<i>" + word + "</i><br>    " +
+//                "<ul>      <li>        " +
+//                "<font color=\"#cc0000\"><b>" + definition + "</b></font>" +
+//                "      </li>    </ul>  </body></html>";
+//
+//        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_FILE_PATH, true))) {
+//            writer.write(htmlContent);
+//            writer.newLine();
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
+//        addWord(word, definition);
+        try (RandomAccessFile file = new RandomAccessFile(DATA_FILE_PATH, "rw")) {
+            FileChannel channel = file.getChannel();
+            FileLock lock = channel.lock();
+            String htmlContent;
+            file.seek(file.length());
+            if (translatedDefinition.isEmpty()) {
+                htmlContent = word + "<html>  <head>      </head>  <body>    " +
+                        "<i>" + word + "</i><br>    " +
+                        "<ul>      <li>        " +
+                        "<font color=\"#cc0000\"><b>" + definition + "</b></font>" +
+                        "      </li>    </ul>  </body></html>";
+            }
+            else {
+                htmlContent = word + "<html>  <head>      </head>  <body>    " +
+                        "<i>" + word + "</i><br>    " +
+                        "<ul>      <li>        " +
+                        "<font color=\"#cc0000\"><b>" + translatedDefinition + "</b></font>" +
+                        "      </li>    </ul>  </body></html>";
+            }
+            file.writeBytes(word + SPLITTING_CHARACTERS + htmlContent + System.lineSeparator());
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_FILE_PATH, true))) {
-            writer.write(htmlContent);
-            writer.newLine();
+            lock.release();
+
+            // Add the word to the in-memory data structure
+            addWord(word, htmlContent);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        addWord(word, definition);
     }
 
     public void updateWordDefinitionToFile(String word, String newDefinition) {
         // Update the definition of the word in the data file
+//        try {
+//            String filePath = DATA_FILE_PATH; // Update the file path accordingly
+//            File inputFile = new File(filePath);
+//            File tempFile = new File("data/temp.txt");
+//
+//            try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+//                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
+//
+//                String currentLine;
+//                while ((currentLine = reader.readLine()) != null) {
+//                    // Check if the line contains the word to be updated
+//                    if (currentLine.startsWith(word)) {
+//                        String updatedLine = word + "<html>  <head>      </head>  <body>    " +
+//                                "<i>" + word + "</i><br>    " +
+//                                "<ul>      <li>        " +
+//                                "<font color=\"#cc0000\"><b>" + newDefinition + "</b></font>" +
+//                                "      </li>    </ul>  </body></html>";
+//                        writer.write(updatedLine);
+//                    } else {
+//                        writer.write(currentLine);
+//                    }
+//                    writer.newLine();
+//                }
+//            }
+//            changeWordDefinition(word, newDefinition);
+//            // Delete the original file and rename the temp file
+//            if (inputFile.delete() && tempFile.renameTo(inputFile)) {
+//                System.out.println("Definition updated for word: " + word);
+//            }
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//        }
         try {
             String filePath = DATA_FILE_PATH; // Update the file path accordingly
-            File inputFile = new File(filePath);
-            File tempFile = new File("data/temp.txt");
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-                 BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
-
+            // Read the entire file content into a list
+            List<String> fileLines = new ArrayList<>();
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
                 String currentLine;
                 while ((currentLine = reader.readLine()) != null) {
-                    // Check if the line contains the word to be updated
-                    if (currentLine.startsWith(word)) {
-                        String updatedLine = word + "<html>  <head>      </head>  <body>    " +
+                    fileLines.add(currentLine);
+                }
+            }
+
+                 // Update the definition of the word in the list
+            for (int i = 0; i < fileLines.size(); i++) {
+                String line = fileLines.get(i);
+                if (line.startsWith(word)) {
+                    String updatedLine = word + "<html>  <head>      </head>  <body>    " +
                                 "<i>" + word + "</i><br>    " +
                                 "<ul>      <li>        " +
                                 "<font color=\"#cc0000\"><b>" + newDefinition + "</b></font>" +
                                 "      </li>    </ul>  </body></html>";
-                        writer.write(updatedLine);
-                    } else {
-                        writer.write(currentLine);
-                    }
-                    writer.newLine();
+                    fileLines.set(i, updatedLine);
                 }
             }
 
-            // Delete the original file and rename the temp file
-            if (inputFile.delete() && tempFile.renameTo(inputFile)) {
-                System.out.println("Definition updated for word: " + word);
+            // Write the updated content back to the file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                for (String line : fileLines) {
+                    writer.write(line);
+                    writer.newLine();
+                }
             }
+            changeWordDefinition(word, newDefinition);
+            System.out.println("Definition updated for word: " + word);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -235,7 +326,7 @@ public class DictionaryController {
                 return Translate.callUrlAndParseResult("en", "vn", word);
             }
             else {
-                return Translate.callUrlAndParseResult("vn", "en", word);
+                return Translate.callUrlAndParseResult2("en", "vn", word);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -266,6 +357,7 @@ public class DictionaryController {
         definitionView.getEngine().loadContent("");
         initListeners();
         DATA_FILE_PATH = "data/E_V.txt";
+        Dictionary.DATA_FILE_PATH = "data/E_V.txt";
         readData();
         defaultData.removeAll();
         defaultData.addAll(listView.getItems());
@@ -278,6 +370,7 @@ public class DictionaryController {
         definitionView.getEngine().loadContent("");
         initListeners();
         DATA_FILE_PATH = "data/V_E.txt";
+        Dictionary.DATA_FILE_PATH = "data/V_E.txt";
         readData();
         defaultData.removeAll();
         defaultData.addAll(listView.getItems());
@@ -308,7 +401,9 @@ public class DictionaryController {
         if (defaultData.isEmpty()) {
             defaultData.addAll(listView.getItems());
         }
+        definitionView.getEngine().loadContent("");
         if (searchText.isEmpty()) {
+            definitionView.getEngine().loadContent("");
             listView.setItems(defaultData);
         } else {
             List<WordSimilarity> wordSimilarities = new ArrayList<>();
@@ -348,5 +443,26 @@ public class DictionaryController {
         }
 
         return dp[m][n];
+    }
+
+    @FXML
+    public void openGame(ActionEvent event) {
+        try {
+            FXMLLoader gameLoader = new FXMLLoader(getClass().getResource("game-view.fxml"));
+            AnchorPane gameRoot = gameLoader.load();
+            GameController gameController = gameLoader.getController();
+            gameController.setDictionaryController(this);
+            System.out.println("game view");
+            // Initialize the game controller and load the game words here
+            // Add the gameRoot to your main scene or a new stage
+            // Show the game scene or stage
+            Stage gameStage = new Stage();
+            gameStage.setScene(new Scene(gameRoot));
+            gameStage.setTitle("Match Definition");
+            gameStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

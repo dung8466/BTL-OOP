@@ -18,7 +18,7 @@
 <?import java.net.URL?>
 <?import java.lang.String?>
 <AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.dictionary.DictionaryController">
+            fx:controller="com.example.dictionary.DictionaryController" fx:id="dictionaryController">
     <stylesheets>
         <String fx:value="styles.css" />
     </stylesheets>
@@ -38,9 +38,14 @@
         <Menu mnemonicParsing="false" text="Edit">
           <items>
             <MenuItem mnemonicParsing="false" text="Add New Word" onAction="#addNewWord"/>
-            <MenuItem mnemonicParsing="false" text="Delete Word" onAction="#deleteSelectedWord" fx:id="deleteWordMenuItem"/>
-              <MenuItem mnemonicParsing="false" text="Change Definition" onAction="#changeDefinitionMenuItemClicked" />
+            <MenuItem mnemonicParsing="false" text="Delete Word" onAction="#deleteSelectedWord" fx:id="deleteWordMenuItem" visible="false"/>
+            <MenuItem mnemonicParsing="false" text="Change Definition" onAction="#changeDefinitionMenuItemClicked" fx:id="changeWordMenuItem" visible="false"/>
           </items>
+        </Menu>
+        <Menu text="Game">
+            <items>
+                <MenuItem text="Match Definition" mnemonicParsing="false" onAction="#openGame" />
+            </items>
         </Menu>
       </menus>
     </MenuBar>
@@ -50,8 +55,8 @@
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <Button layoutX="750.0" layoutY="1.0" mnemonicParsing="false" text="UK" onAction="#Speech"/>
-                        <Button layoutX="700.0" layoutY="1.0" mnemonicParsing="false" text="US" onAction="#soundAPI"/>
+                        <Button layoutX="750.0" layoutY="1.0" mnemonicParsing="false" text="UK" onAction="#UkVoice"/>
+                        <Button layoutX="700.0" layoutY="1.0" mnemonicParsing="false" text="US" onAction="#UsVoice"/>
                         <TextField layoutX="8.0" layoutY="2.0" prefHeight="26.0" prefWidth="200.0" fx:id="searchTextField" onKeyReleased="#handleSearch" promptText="Search words"/>
                      </children>
                   </AnchorPane>

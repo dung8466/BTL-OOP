@@ -5,7 +5,7 @@ import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 import java.util.Locale;
 
-public class TextToSpeech {
+public class Uk {
     public static void Speech(String Text) {
         try {
 

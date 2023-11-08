@@ -7,6 +7,7 @@ module com.example.dictionary {
     requires org.json;
     requires freetts;
     requires jlayer;
+    requires org.jsoup;
 
     opens com.example.dictionary to javafx.fxml;
     exports com.example.dictionary;

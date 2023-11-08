@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
@@ -23,11 +24,18 @@ public class Dictionary extends Application {
     static final String SPLITTING_CHARACTERS = "<html>";
     private Map<String, Word> data = new HashMap<>();
 
+    @FXML
+    public MenuItem deleteWordMenuItem;
 
+    @FXML
+    public MenuItem changeWordMenuItem;
     @FXML
     private ListView<String> listView;
     @FXML
     private WebView definitionView;
+
+    @FXML
+    private DictionaryController dictionaryController;
 
     public static ObservableList<String> defaultValue = FXCollections.observableArrayList();
 
@@ -47,7 +55,7 @@ public class Dictionary extends Application {
         primaryStage.setTitle("Dictionary Demonstration");
         primaryStage.show();
 
-
+        this.dictionaryController = fxmlLoader.getController();
         // init components
         initComponents(scene);
 
@@ -66,9 +74,15 @@ public class Dictionary extends Application {
         Dictionary context = this;
         this.listView.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    Word selectedWord = data.get(newValue.trim());
-                    String definition = selectedWord.getDef();
-                    context.definitionView.getEngine().loadContent(definition, "text/html");
+                    if (newValue != null) {
+                        Word selectedWord = data.get(newValue.trim());
+                        if (selectedWord != null) {
+                            String definition = selectedWord.getDef();
+                            dictionaryController.deleteWordMenuItem.setVisible(true);
+                            dictionaryController.changeWordMenuItem.setVisible(true);
+                            context.definitionView.getEngine().loadContent(definition, "text/html");
+                        }
+                    }
                 }
         );
     }
@@ -90,5 +104,6 @@ public class Dictionary extends Application {
             data.put(word, wordObj);
         }
     }
+
 }
 

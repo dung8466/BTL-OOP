@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.web.WebView?>
+<!--<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dictionary.GameController">-->
+<!--&lt;!&ndash;    <children>&ndash;&gt;-->
+<!--&lt;!&ndash;        <Label layoutX="20.0" layoutY="20.0" text="Word:"/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <Label fx:id="wordLabel" layoutX="100.0" layoutY="20.0" text=""/>&ndash;&gt;-->
+<!--&lt;!&ndash;        <VBox layoutX="20.0" layoutY="60.0" spacing="10.0">&ndash;&gt;-->
+<!--&lt;!&ndash;            <children>&ndash;&gt;-->
+<!--&lt;!&ndash;                <Button fx:id="definitionButtons0" text="Definition 1" onAction="#checkAnswer"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                <Button fx:id="definitionButtons1" text="Definition 2" onAction="#checkAnswer"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                <Button fx:id="definitionButtons2" text="Definition 3" onAction="#checkAnswer"/>&ndash;&gt;-->
+<!--&lt;!&ndash;                <Button fx:id="definitionButtons3" text="Definition 4" onAction="#checkAnswer"/>&ndash;&gt;-->
+<!--&lt;!&ndash;            </children>&ndash;&gt;-->
+<!--&lt;!&ndash;        </VBox>&ndash;&gt;-->
+<!--&lt;!&ndash;        <Label fx:id="scoreLabel" layoutX="20.0" layoutY="350.0" text="Score: 0"/>&ndash;&gt;-->
+<!--&lt;!&ndash;    </children>&ndash;&gt;-->
+<!--    <GridPane>-->
+<!--        <VBox alignment="CENTER" spacing="10">-->
+<!--            <Label fx:id="wordLabel" />-->
+<!--&lt;!&ndash;            <TextField fx:id="definitionTextField0" />&ndash;&gt;-->
+<!--&lt;!&ndash;            <TextField fx:id="definitionTextField1" />&ndash;&gt;-->
+<!--&lt;!&ndash;            <TextField fx:id="definitionTextField2" />&ndash;&gt;-->
+<!--&lt;!&ndash;            <TextField fx:id="definitionTextField3" />&ndash;&gt;-->
+<!--            <HBox spacing="10">-->
+<!--                <WebView fx:id="definitionTextField0" prefHeight="500" prefWidth="250"/>-->
+<!--                <WebView fx:id="definitionTextField1" prefHeight="500" prefWidth="250" />-->
+<!--                <WebView fx:id="definitionTextField2" prefHeight="500" prefWidth="250" />-->
+<!--                <WebView fx:id="definitionTextField3" prefHeight="500" prefWidth="250" />-->
+<!--            </HBox>-->
+<!--            <HBox spacing="10">-->
+<!--                <Button fx:id="definitionButtons0" onAction="#checkAnswer" text="Choose 1" />-->
+<!--                <Button fx:id="definitionButtons1" onAction="#checkAnswer" text="Choose 2" />-->
+<!--                <Button fx:id="definitionButtons2" onAction="#checkAnswer" text="Choose 3" />-->
+<!--                <Button fx:id="definitionButtons3" onAction="#checkAnswer" text="Choose 4" />-->
+<!--            </HBox>-->
+<!--            <Label fx:id="scoreLabel" />-->
+<!--        </VBox>-->
+<!--    </GridPane>-->
+<!--</AnchorPane>-->
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.dictionary.GameController">
+    <GridPane>
+        <VBox alignment="CENTER" spacing="10">
+            <Label fx:id="wordLabel" />
+            <HBox spacing="10">
+                <VBox spacing="10">
+                    <WebView fx:id="definitionTextField0" prefHeight="500" prefWidth="250" />
+                    <Button fx:id="definitionButtons0" onAction="#checkAnswer" text="Choose 1" alignment="CENTER"/>
+                </VBox>
+                <VBox spacing="10">
+                    <WebView fx:id="definitionTextField1" prefHeight="500" prefWidth="250" />
+                    <Button fx:id="definitionButtons1" onAction="#checkAnswer" text="Choose 2" alignment="CENTER"/>
+                </VBox>
+                <VBox spacing="10">
+                    <WebView fx:id="definitionTextField2" prefHeight="500" prefWidth="250" />
+                    <Button fx:id="definitionButtons2" onAction="#checkAnswer" text="Choose 3" alignment="CENTER"/>
+                </VBox>
+                <VBox spacing="10">
+                    <WebView fx:id="definitionTextField3" prefHeight="500" prefWidth="250" />
+                    <Button fx:id="definitionButtons3" onAction="#checkAnswer" text="Choose 4" alignment="CENTER"/>
+                </VBox>
+            </HBox>
+            <Label fx:id="scoreLabel" />
+        </VBox>
+    </GridPane>
+</AnchorPane>

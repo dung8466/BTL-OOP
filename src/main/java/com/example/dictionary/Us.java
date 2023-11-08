@@ -9,18 +9,18 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class Audio {
-    private static Audio audio;
+public class Us {
+    private static Us us;
 
-    public Audio() {
+    public Us() {
     }
 
-    public synchronized static Audio getInstance() {
+    public synchronized static Us getInstance() {
 
-        if (audio == null) {
-            audio = new Audio();
+        if (us == null) {
+            us = new Us();
         }
-        return audio;
+        return us;
     }
 
     public InputStream getAudio(String text, String languageOutput)
