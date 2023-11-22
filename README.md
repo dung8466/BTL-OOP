@@ -35,11 +35,12 @@ The application has basic features:
 
 * Words are read from two files "data/E_V.txt" and "data/V_E.txt".
 
-* You can look up words in the dictionary.
-
 * You can use British or American accent button to pronounce words.
 
 * A simple game of matching word with its definition.
+  
+* You can look up words in the dictionary.
+The search method [calculates the Levenshtein distance](https://www.geeksforgeeks.org/introduction-to-levenshtein-distance/) to display words in dictionary with the most similar on top. e.g. You type 'h' into the search bar then 'h' 'ah' 'ch'... should be on top.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
